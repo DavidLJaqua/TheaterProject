@@ -1,7 +1,5 @@
 package Theater;
 
-import java.util.Iterator;
-
 public class Driver {
 
 	public static void main(String[] args){
@@ -21,10 +19,11 @@ public class Driver {
 		clientList.removeClient(client1.getClientID());
 		System.out.println("removed client1. clientList has client1? " + (clientList.search(client1.getClientID()) != null) );
 		
+		Client client3 = new Client("Marry", "99999", "222-333-4444");
+		clientList.insertClient(client3);
+		System.out.println("added client 3");
+		
 		System.out.println("clientList current contents: ");
-		Iterator<Client> iterator = clientList.getClients();
-		while (iterator.hasNext()){
-			System.out.println(iterator.next().toString());
-		}
+		System.out.println(clientList.toString());
 	}
 }

@@ -9,62 +9,64 @@ import java.io.Serializable;
  */
 public class Client implements Serializable {
 
-    private String name, address, phoneNum, clientID;
-    private static final String CLIENT_STRING = "Cli";
-    private int balance;
+	private String name, address, phoneNum, clientID;
+	private static final String CLIENT_STRING = "Cli";
+	private int balance;
 
-    public Client(String name, String address, String phoneNum){
-            this.name = name;
-            this.address = address;
-            this.phoneNum = phoneNum;
-            balance = 0;
+	/**
+	 * Creates a new client object with the given info and set's their balance to 0
+	 */
+	public Client(String name, String address, String phoneNum){
+		this.name = name;
+		this.address = address;
+		this.phoneNum = phoneNum;
+		balance = 0;
 
-            // fetch a new client id
-            clientID = CLIENT_STRING + ClientIDServer.instance().getID();
+		// fetch a new client id
+		clientID = CLIENT_STRING + ClientIDServer.instance().getID();
     }
 
-    // Getters
-    public String getName(){
-            return name;
-    }
+	// Getters
+	public String getName(){
+		return name;
+	}
 
-    public String getAddress(){
-            return address;
-    }
+	public String getAddress(){
+		return address;
+	}
 
-    public String getPhoneNum(){
-            return phoneNum;
-    }
+	public String getPhoneNum(){
+    	return phoneNum;
+	}
 
-    public String getClientID(){
-            return clientID;
-    }
+	public String getClientID(){
+		return clientID;
+	}
 
-    public int getBalance(){
-            return balance;
-    }
+	public int getBalance(){
+		return balance;
+	}
 
-    public String toString(){
-            return "Client [name=" + name + " address=" + address + " phoneNum=" + phoneNum 
-                            + " clientID=" + clientID + " balance=" + balance + "]"; 
-    }
+	// Setters
+	public void setName(String name){
+		this.name = name;
+	}
 
-    // Setters
-    public void setName(String name){
-            this.name = name;
-    }
+	public void setAddress(String address){
+		this.address = address;
+	}
 
-    public void setAddress(String address){
-            this.address = address;
-    }
+	public void setPhoneNum(String phoneNum){
+		this.phoneNum = phoneNum;
+ 	}
 
-    public void setPhoneNum(String phoneNum){
-            this.phoneNum = phoneNum;
-    }
-
-    public void setBalace(int balance){
-            this.balance = balance;
-    }
+	public void setBalace(int balance){
+		this.balance = balance;
+	}
     
-    
+	@Override
+	public String toString(){
+		return "Client [name=" + name + " address=" + address + " phoneNum=" + phoneNum 
+				+ " clientID=" + clientID + " balance=" + balance + "]"; 
+	}
 }
