@@ -105,6 +105,7 @@ public class Client implements Serializable {
 	 * Checks if the client has a current or upcoming show
 	 * @return true if the client has a current or upcoming show
 	 */
+	/*
 	public boolean hasUpcomingShow() {
 		Calendar currentDate = Calendar.getInstance();
 		Iterator iterator = Theater.instance().getShowList();
@@ -114,18 +115,18 @@ public class Client implements Serializable {
 		 * Loops through all shows looking for one by the client that
 		 * is currently in progress or has a future end date
 		 */
-		while(iterator.hasNext()) {
+	/*	while(iterator.hasNext()) {
 			show = (Show) iterator.next();
 			if (show.getClientId().equals(clientID)
 					&& show.getEndDate().after(currentDate)) {
 				/*
 				 * this show ends after the current date
 				 */
-				return true; // client has a current/future show
+	/*			return true; // client has a current/future show
 			}
 		}
 		return false; // client has no current/future shows
-	}
+	}*/
 	
 	@Override
 	public String toString(){

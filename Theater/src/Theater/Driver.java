@@ -11,9 +11,9 @@ public class Driver {
 		System.out.println("show1 toString: " + show1.toString());
 		System.out.println("show2 toString: " + show2.toString());
 		
-		ShowList showList = ShowList.instance();
-		showList.insertShow(show1);
-		showList.insertShow(show2);
+		//ShowList showList = ShowList.instance();
+		//showList.insertShow(show1);
+		//showList.insertShow(show2);
 		System.out.println("*Added shows to showList*");
 		
 		
@@ -28,6 +28,6 @@ public class Driver {
 		
 		System.out.println("Is theater available between " + Show.dateToString(date1) + " and "
 							+ Show.dateToString(date2) + "?");
-		System.out.println(Show.isTheaterAvailable(date1, date2));
+		//System.out.println(Show.isTheaterAvailable(date1, date2));
 	}
 }

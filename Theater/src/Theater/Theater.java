@@ -257,9 +257,9 @@ class Theater implements Serializable {
         if (client == null) {
             return(CLIENT_NOT_FOUND);
         }
-        if (client.hasUpcomingShow()) {     // Need to be implemented
-        	return(CLIENT_HAS_UPCOMING_SHOW);
-        }
+        //if (client.hasUpcomingShow()) {     // Need to be implemented
+        //	return(CLIENT_HAS_UPCOMING_SHOW);
+        //}
         if (clientList.removeClient(clientID)) {
             return (ACTION_COMPLETED);
         }
@@ -301,7 +301,7 @@ class Theater implements Serializable {
      * @return Iterator of ShowList
      */
     public Iterator getShowList() {
-    	return showList.getShows();
+    	return showList.getShowList();
     }
 
 

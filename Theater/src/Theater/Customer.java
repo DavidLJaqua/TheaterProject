@@ -13,7 +13,8 @@ public class Customer implements Serializable {
     private String phoneNum;
     private String customerId;
     private static final String CUSTOMER_STRING = "Cus";
-    private List creditCardList = new LinkedList();
+    //private List creditCardList = new LinkedList();
+    private CreditCardList creditCardList;
     /*ToDo work on constructor*/
     /*Test GetId from customerIdServer*/
     /**
@@ -38,7 +39,8 @@ public class Customer implements Serializable {
 
     /*ToDo implement getCreditCardList() : Iterator*/
     public Iterator getCreditCardList() {
-            return (creditCardList.listIterator());
+            //return (creditCardList.listIterator());
+    		return creditCardList.getCreditCardList();
     }
 
     /*Getters*/

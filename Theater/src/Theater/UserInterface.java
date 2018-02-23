@@ -219,23 +219,34 @@ public class UserInterface {
      * uses the appropriate Theater method for adding the show.
      *  // Add Logic for add a show only if theater is free during this period
      */
-//    public void addShows() {
-//      Show result;
-//      do {
-//        String name = getToken("Enter Show name");
-//        String clientID = getToken("Enter client id"); 
-//        String period = getToken("Enter duration of the show"); // Add Logic for add a show only if theater is free during this period
+    public void addShows() {
+      Show result;
+      do {
+        String name = getToken("Enter Show name");
+        String clientID = getToken("Enter client id"); 
+        String startDate = getToken("Enter start date of the show(MM/DD/YYYY");
+        //check validity of string date entered
+        if(!isThisDateValid(startDate)) {
+        	System.out.println("\nShow date entered is incorrect; out of range");
+        	//break;
+        }
+        //input is correct and can continue adding info
+        else {
+        String period = getToken("Enter duration of the show"); // Add Logic for add a show only if theater is free during this period
+        
 //        result = theater.addShow(name, clientID, period);
 //        if (result != null) {
 //          System.out.println(result);
 //        } else {
 //          System.out.println("Show could not be added");
 //        }
-//        if (!yesOrNo("Add more shows?")) {
-//          break;
-//        }
-//      } while (true);
-//    }
+        }
+        if (!yesOrNo("Add more shows?")) {
+          break;
+        }
+        
+      } while (true);
+    }
     /**
      * 
      *  
@@ -420,6 +431,35 @@ public class UserInterface {
      * Calls the appropriate method for the different functionalities.
      *  
      */
+    
+    /*
+     * Supplementary function to test validation of date (MM/DD/YY) entered in by user
+     * If month or date is out of range, returns false. Else, returns true
+     * Code based on: https://www.mkyong.com/java/how-to-check-if-date-is-valid-in-java/
+     */
+	public boolean isThisDateValid(String dateToValidate){
+
+		if(dateToValidate == null){
+			return false;
+		}
+
+		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+		sdf.setLenient(false);
+
+		try {
+
+			//if not valid, it will throw ParseException
+			Date date = sdf.parse(dateToValidate);
+			System.out.println(date);
+
+		} catch (ParseException e) {
+
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+
     public void process() {
       int command;
       help();
@@ -441,8 +481,8 @@ public class UserInterface {
 //                                  break;
           case LIST_CUSTOMERS:    getCustomers();
                                   break;
-//          case ADD_SHOW:          addShow();
-//                                  break;
+          case ADD_SHOW:          addShows();
+                                  break;
 //          case LIST_SHOWS:        listShows();
 //                                  break;
           case STORE_DATA:        storeData();

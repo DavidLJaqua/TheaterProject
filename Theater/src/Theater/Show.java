@@ -133,7 +133,8 @@ public class Show implements Serializable{
 	 * @param endDate the ending date of a show
 	 * @return true if the theater is available (no collisions with existing shows) otherwise, false
 	 */
-	public static boolean isTheaterAvailable(Calendar startDate, Calendar endDate){
+	
+	/*public static boolean isTheaterAvailable(Calendar startDate, Calendar endDate){
 		Iterator iterator = Theater.instance().getShowList();
 		Show show;
 		
@@ -147,7 +148,7 @@ public class Show implements Serializable{
 				 * the theater is not available for this time (specified start date is between 
 				 * another shows' start and end dates)
 				 */
-				return false;
+	/*			return false;
 			}
 			
 			// check if the endDate is between this shows' start and end dates
@@ -157,13 +158,13 @@ public class Show implements Serializable{
 				 * the theater is not available for this time (specified end date is between
 				 * another shows' start and end dates 
 				 */
-				return false;
+	/*			return false;
 			}
 			
 		}
 		// no collisions found with existing shows; theater is available for this date range
 		return true;
-	}
+	}*/
 	
 	@Override
 	public String toString(){
