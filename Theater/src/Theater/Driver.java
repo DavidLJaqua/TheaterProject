@@ -1,29 +1,33 @@
 package Theater;
 
+import java.util.Calendar;
+
 public class Driver {
 
 	public static void main(String[] args){
-		Client client1 = new Client("Bob", "12345 ABC", "555-666-1234");
-		Client client2 = new Client("Sally", "11122 ABC", "111-222-1234");
+		// new show on January 10th, 2018 last for 5 days
+		Show show1 = new Show("Awesome Show", "Cli1", 2018, 1, 10, 5); // january 10th 2018
+		Show show2 = new Show("Best Show EVER!", "Cli2", 2018, 1, 20, 2); // january 20th 2018
+		System.out.println("show1 toString: " + show1.toString());
+		System.out.println("show2 toString: " + show2.toString());
 		
-		ClientList clientList = ClientList.instance();
-		clientList.insertClient(client1);
-		clientList.insertClient(client2);
+		ShowList showList = ShowList.instance();
+		showList.insertShow(show1);
+		showList.insertShow(show2);
+		System.out.println("*Added shows to showList*");
 		
-		System.out.println("clientList has client1? " + (clientList.search(client1.getClientID()) != null) );
-		System.out.println("clientList has client2? " + (clientList.search(client2.getClientID()) != null) );
 		
-		System.out.println("client1 toString: " + clientList.search(client1.getClientID()).toString());
-		System.out.println("client2 toString: " + clientList.search(client2.getClientID()).toString());
+		// testing show.isTheaterAvailable(date)
+		Calendar date1 = Calendar.getInstance();
+		date1.clear();
+		date1.set(2018, 0, 12); // january 12th 2018 (calendar month is 0 indexed)
 		
-		clientList.removeClient(client1.getClientID());
-		System.out.println("removed client1. clientList has client1? " + (clientList.search(client1.getClientID()) != null) );
+		Calendar date2 = Calendar.getInstance();
+		date2.clear();
+		date2.set(2018, 0, 20); // january 20th 2018 (calendar month is 0 indexed)
 		
-		Client client3 = new Client("Marry", "99999", "222-333-4444");
-		clientList.insertClient(client3);
-		System.out.println("added client 3");
-		
-		System.out.println("clientList current contents: ");
-		System.out.println(clientList.toString());
+		System.out.println("Is theater available between " + Show.dateToString(date1) + " and "
+							+ Show.dateToString(date2) + "?");
+		System.out.println(Show.isTheaterAvailable(date1, date2));
 	}
 }

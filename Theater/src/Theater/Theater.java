@@ -25,7 +25,7 @@ class Theater implements Serializable {
     public static final long serialVersionUID = 1L;
     private ClientList clientList;
     private CustomerList customerList;
-//    private ShowList showList;
+	private ShowList showList;
     public static final int CLIENT_NOT_FOUND = 1;
     public static final int CLIENT_HAS_UPCOMING_SHOW = 2;
     public static final int CUSTOMER_NOT_FOUND = 3;
@@ -40,7 +40,7 @@ class Theater implements Serializable {
      */
     private Theater() {
       clientList = ClientList.instance();
-//      showList = ShowList.instance();
+      showList = ShowList.instance();
       customerList = CustomerList.instance();
     }
     /**
@@ -278,6 +278,30 @@ class Theater implements Serializable {
             return (ACTION_COMPLETED);
         }
         return (ACTION_FAILED);
+    }
+    
+    /**
+     * Gets an iterator for the client list
+     * @return Iterator of ClientList
+     */
+    public Iterator getClientList() {
+    	return clientList.getClients();
+    }
+    
+    /**
+     * Gets an iterator for the customer list
+     * @return Iterator of CustomerList
+     */
+    public Iterator getCustomerList() {
+    	return customerList.getCustomers();
+    }
+    
+    /**
+     * Gets an iterator for the show list
+     * @return Iterator of ShowList
+     */
+    public Iterator getShowList() {
+    	return showList.getShows();
     }
 
 

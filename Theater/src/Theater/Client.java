@@ -68,6 +68,6 @@ public class Client implements Serializable {
 	@Override
 	public String toString(){
 		return "Client [name=" + name + " address=" + address + " phoneNum=" + phoneNum 
-				+ " clientID=" + clientID + " balance=" + balance + "]"; 
+				+ " clientID=" + clientID + " balance=" + balance + "]";
 	}
 }
