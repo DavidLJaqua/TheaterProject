@@ -70,14 +70,6 @@ public class Show implements Serializable{
 	}
 
 	/**
-	 * Sets the shows' name
-	 * @param name New name of the show
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
 	 * Gets the start date of the show
 	 * @return calendar representation of the start date
 	 */
@@ -93,6 +85,22 @@ public class Show implements Serializable{
 		return endDate;
 	}
 
+	/**
+	 * Sets the shows' name
+	 * @param name New name of the show
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	/**
+	 * Sets the shows' clients' id
+	 * @param clientID the new client ID
+	 */
+	public void setClientID(String clientID) {
+		this.clientID = clientID;
+	}
+	
 	/**
 	 * Sets the start date of the show
 	 * <br><br>
@@ -133,7 +141,8 @@ public class Show implements Serializable{
 			show = (Show) iterator.next();
 			
 			// check if the startDate is between this shows' start and end dates
-			if (startDate.after(show.getStartDate()) && startDate.before(show.getEndDate())) {
+			if (startDate.after(show.getStartDate()) 
+					&& startDate.before(show.getEndDate())) {
 				/*
 				 * the theater is not available for this time (specified start date is between 
 				 * another shows' start and end dates)
@@ -142,7 +151,8 @@ public class Show implements Serializable{
 			}
 			
 			// check if the endDate is between this shows' start and end dates
-			if (endDate.after(show.getStartDate()) && startDate.before(show.getEndDate())) {
+			if (endDate.after(show.getStartDate()) 
+					&& startDate.before(show.getEndDate())) {
 				/*
 				 * the theater is not available for this time (specified end date is between
 				 * another shows' start and end dates 
