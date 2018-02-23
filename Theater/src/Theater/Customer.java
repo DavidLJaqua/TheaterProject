@@ -6,11 +6,13 @@ package Theater;
  * */
 import java.util.*;
 import java.io.Serializable;
-public class Customer implements Serializable {
+public final class Customer implements Serializable {
     private static final long serialVersionUID = 1L;
     private String name;
     private String address;
     private String phoneNum;
+    private CreditCard creditCard;
+
     private String customerId;
     private static final String CUSTOMER_STRING = "Cus";
     //private List creditCardList = new LinkedList();
@@ -27,20 +29,34 @@ public class Customer implements Serializable {
     * @param name name of the member
     * @param address address of the member
     * @param phone phone number of the member
+     * @param cardNumber customer credit card number
+     * @param expirationDate credit card expiration date
     */
-    public  Customer(String name, String address, String phone) {
+    public  Customer(String name, String address, String phone,
+                        String cardNumber, String expirationDate) {
         this.name = name;
         this.address = address;
         this.phoneNum = phone;
         customerId = CUSTOMER_STRING + (CustomerIdServer.instance()).getId();
+        creditCard = new CreditCard(customerId, cardNumber, expirationDate);
     }
 
-    /*ToDo implement getNumberOfCards() : Integer*/
 
     /*ToDo implement getCreditCardList() : Iterator*/
     public Iterator getCreditCardList() {
             //return (creditCardList.listIterator());
     		return creditCardList.getCreditCardList();
+    }
+    
+    public boolean addCreditCard(CreditCard creditCard){
+        return creditCardList.insertCreditCard(creditCard);
+    }
+    
+    
+    /*ToDo implement getNumberOfCards() : Integer*/
+    public int getNumberOfCards(){
+        int cardAmount = 0;
+        return cardAmount;
     }
 
     /*Getters*/
@@ -59,6 +75,11 @@ public class Customer implements Serializable {
     public String getCustomerId() {
                   return customerId;
           }
+    
+    public CreditCard getCustomerCreditCard(){
+        return this.creditCard;
+    }
+   
 
     /*Setters*/
     public void setName(String name) {
@@ -75,10 +96,12 @@ public class Customer implements Serializable {
 
     @Override
     public String toString() {
-        return "Customer[" + "Name=" + name + ", Address=" + address + 
-                ", Phone Number=" + phoneNum + ", Customer Id=" + customerId + 
-                ", Credit Card=" + creditCardList + ']';
+        return "Customer[" + "name=" + name + ", address=" + address + 
+                ", phoneNum=" + phoneNum +", customerId=" + customerId +
+                ", creditCardNumber=" + creditCard.getCardNum() + 
+                "Expiration Date=" + creditCard.getExpDate() + ']';
     }
-	 
-    
+
+
+
 }
