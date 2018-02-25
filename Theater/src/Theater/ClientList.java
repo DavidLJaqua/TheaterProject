@@ -17,13 +17,12 @@ public class ClientList implements Serializable{
 	 * Singleton instance of the ClientList
 	 */
 	private static ClientList clientListInstance;
-	private List<Client> clientList;
+	private List clientList = new LinkedList<>();
 
 	/**
 	 * Creates singleton instance of the ClientList
 	 */
 	private ClientList() {
-		clientList = new LinkedList<Client>();
 	}
 	
 	/**
@@ -44,8 +43,9 @@ public class ClientList implements Serializable{
 	 * @return Client of with the given ID, otherwise null
 	 */
 	public Client search(String clientID){
-		for (Client client : clientList){
-			if (client.getClientID().equals(clientID)){
+		for(Iterator iterator = clientList.iterator(); iterator.hasNext();) {
+			Client client = (Client) iterator.next();
+			if (client.getClientID().equals(clientID)) {
 				return client; // client found with id
 			}
 		}
@@ -64,14 +64,14 @@ public class ClientList implements Serializable{
 	/**
 	 * Removes the client with the specified client ID from the list
 	 * @param clientID ID of the client to remove
-	 * @return whether or not the client with the id was removed
+	 * @return true if the client with the given id was removed, otherwise, false
 	 */
 	public boolean removeClient(String clientID){
-		for (Client client : clientList){
-			if (client.getClientID().equals(clientID)){
+		for(Iterator iterator = clientList.iterator(); iterator.hasNext();) {
+			Client client = (Client) iterator.next();
+			if (client.getClientID().equals(clientID)) {
 				// we found the client with the specified client ID, remove them from list
-				clientList.remove(client);
-				return true;
+				return clientList.remove(client);
 			}
 		}
 		return false;
