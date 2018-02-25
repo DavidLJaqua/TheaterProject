@@ -149,7 +149,7 @@ public class UserInterface {
     public int getCommand() {
       do {
         try {
-          int value = Integer.parseInt(getToken("Enter command:" + HELP + " for help"));
+          int value = Integer.parseInt(getToken("Enter command: "));
           if (value >= EXIT && value <= HELP) {
             return value;
           }
@@ -176,7 +176,7 @@ public class UserInterface {
       System.out.println(ADD_SHOW + " to add a show/play");
       System.out.println(LIST_SHOWS + " to list all shows");
       System.out.println(STORE_DATA + " to  save data");
-      System.out.println(RETRIEVE_DATA + "to retrieve data");
+      System.out.println(RETRIEVE_DATA + " to retrieve data");
       System.out.println(HELP + " for help");
     }
     /**
@@ -259,14 +259,15 @@ public class UserInterface {
         String creditCardNumber = getToken("Enter Credit Card Number");
         String expiryDate = getToken("Enter card expiration date (mm/dd/yy)");
         // Validating input
-        if (cardHasNoCustomer(customerId, creditCardNumber)){
-            CreditCard result;
-            result = theater.addCreditCard(customerId, creditCardNumber, expiryDate);
-            if (result == null){
-                System.out.println("Credit Card already in file under a different "
+        if (doesCardAlreadyExist(creditCardNumber)){
+        	System.out.println("Credit Card already in file under a different "
                     + "customer.");
+        } else{
+            CreditCard result = theater.addCreditCard(customerId, creditCardNumber, expiryDate);
+            if (result != null){
+                System.out.println(result.toString());
             } else{
-                System.out.println(result);
+                System.out.println("Card was unable to be added.");
             }
         }
     }
@@ -354,7 +355,7 @@ public class UserInterface {
      */
     public void getClients() {
         Iterator result;
-        result = theater.getClient();
+        result = theater.getClientList();
         if (result == null) {
             System.out.println("Client List is empty.");
         } else {
@@ -374,7 +375,7 @@ public class UserInterface {
      */
     public void getCustomers() {
         Iterator result;
-        result = theater.getCustomer();
+        result = theater.getCustomerList();
         if (result == null) {
             System.out.println("Empty List");
         } else {
@@ -393,7 +394,7 @@ public class UserInterface {
      */
     public void getShows() {
       Iterator result;
-        result = theater.getShows();
+        result = theater.getShowList();
         if (result == null) {
             System.out.println("Empty Show List");
         } else {
@@ -465,20 +466,30 @@ public class UserInterface {
 		}
 		return true;
 	}
-	// cardHasNoCustomer method verifies if credit card number is in file
-    private boolean cardHasNoCustomer(String customerId, String creditCardNumber) {
-        boolean cardNoCustomer = false;
-        CreditCardList creditCardList = CreditCardList.instance();
-        CreditCard cardNumber = creditCardList.search(creditCardNumber);
-        
-        if (cardNumber == null){
-            cardNoCustomer = true;
-        } else if (cardNumber.getCustomerID().equals(customerId)){
-            cardNoCustomer = false;
-        }
-        return cardNoCustomer;
-    }
 
+	/**
+	 * Checks if the given card already exists in the database
+	 * @return True, if the card already exists, else false.
+	 */
+    private boolean doesCardAlreadyExist(String creditCardNumber) {
+        /*
+         * Loops through all customers looking to see if any of them already
+         * have a credit card with the given number.
+         */
+        Iterator custIterator = theater.getCustomerList();
+        while (custIterator.hasNext()) {
+        	Customer customer = (Customer) custIterator.next();
+    		Iterator credIterator = customer.getCreditCardList();
+    		while (credIterator.hasNext()) {
+    			CreditCard creditCard = (CreditCard) credIterator.next();
+    			if (creditCard.getCardNum().equals(creditCardNumber)) {
+    				return true; // a customer already has a card with this number
+    			}
+    		}
+        }
+        return false; // no customers found with the given card numbere
+    }
+    
     /**
      * Orchestrates the whole process.
      * Calls the appropriate method for the different functionalities.

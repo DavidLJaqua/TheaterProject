@@ -11,12 +11,10 @@ public final class Customer implements Serializable {
     private String name;
     private String address;
     private String phoneNum;
-    private CreditCard creditCard;
-
     private String customerId;
-    private static final String CUSTOMER_STRING = "Cus";
-    //private List creditCardList = new LinkedList();
     private CreditCardList creditCardList;
+    private static final String CUSTOMER_STRING = "Cus";
+
     /*ToDo work on constructor*/
     /*Test GetId from customerIdServer*/
     /**
@@ -38,13 +36,14 @@ public final class Customer implements Serializable {
         this.address = address;
         this.phoneNum = phone;
         customerId = CUSTOMER_STRING + (CustomerIdServer.instance()).getId();
-        creditCard = new CreditCard(customerId, cardNumber, expirationDate);
+        CreditCard creditCard = new CreditCard(customerId, cardNumber, expirationDate);
+        /*
+         * Create a new credit card list for this customer which their only credit card
+         */
+        creditCardList = new CreditCardList(creditCard);
     }
 
-
-    /*ToDo implement getCreditCardList() : Iterator*/
     public Iterator getCreditCardList() {
-            //return (creditCardList.listIterator());
     		return creditCardList.getCreditCardList();
     }
     
@@ -52,34 +51,39 @@ public final class Customer implements Serializable {
         return creditCardList.insertCreditCard(creditCard);
     }
     
-    
-    /*ToDo implement getNumberOfCards() : Integer*/
     public int getNumberOfCards(){
-        int cardAmount = 0;
-        return cardAmount;
+    	Iterator iterator = creditCardList.getCreditCardList();
+    	int count = 0;
+    	while(iterator.hasNext()) {
+    		count++;
+    	}
+        return count;
     }
 
     /*Getters*/
     public String getName() {
-          return name;
+    	return name;
     }
 
     public String getAddress() {
-            return address;
+    	return address;
     }
 
     public String getPhoneNum() {	
-                  return phoneNum;
-          }
+    	return phoneNum;
+      }
 
     public String getCustomerId() {
-                  return customerId;
-          }
-    
-    public CreditCard getCustomerCreditCard(){
-        return this.creditCard;
+    	return customerId;
     }
-   
+    
+    /**
+     * Gets the first credit card this customer has
+     * @return Customer's first credit card
+     */
+    public CreditCard getCustomerCreditCard(){
+        return (CreditCard) creditCardList.getCreditCardList().next();
+    }
 
     /*Setters*/
     public void setName(String name) {
@@ -98,10 +102,6 @@ public final class Customer implements Serializable {
     public String toString() {
         return "Customer[" + "name=" + name + ", address=" + address + 
                 ", phoneNum=" + phoneNum +", customerId=" + customerId +
-                ", creditCardNumber=" + creditCard.getCardNum() + 
-                "Expiration Date=" + creditCard.getExpDate() + ']';
+                ", creditCardList=" + creditCardList.toString() + "]";
     }
-
-
-
 }

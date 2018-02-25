@@ -8,33 +8,16 @@ import java.util.List;
 public class CreditCardList implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private List creditCardList = new LinkedList();
-	/*Singleton instance of the ClientList*/
-	private static CreditCardList creditCardListInstance;
 	
-	/* Private constructor for singleton pattern*/
-	//ToDo:Note - discrepancy  in definition of ClientList (Singleton) constructor
-	//			  versus CustomerList constructor -- one is empty and other is not
-	//			  which is correct?
-	private CreditCardList () {
-		//creditCardList = new LinkedList<CreditCard>();
+	public CreditCardList (CreditCard card) {
+		// create a new credit card list with the customers' current card
+		creditCardList.add(card);
 	}
 	
-	/* 
-	 * Supports the singleton pattern
-	 * @return the singleton object
-	 */
-	public static CreditCardList  instance() {
-		if (creditCardListInstance == null) {
-	      return (creditCardListInstance = new CreditCardList());
-	    } else {
-	      return creditCardListInstance;
-	    }
-	  }
-	
 	/**
-     * Search for a specific creditCard based on credit card number.
-     * @param creditCardNum String used to search creditCard in the list.
-     * @return creditCard object.
+     * Search for a specific Credit Card based on the credit card number.
+     * @param creditCardNum the credit card number to remove
+     * @return creditCard credit card found in the list, otherwise, null if no card was found
      */
     public CreditCard search(String creditCardNum){
         for(Iterator iterator = creditCardList.iterator(); iterator.hasNext();){
@@ -46,11 +29,11 @@ public class CreditCardList implements Serializable{
         return null; // card not found.
     }
     
-    
-    /*
-     * Removes Credit card from list, based on credit card number to search through the list
-     * Returns boolean true if card found and removed, else it returns false of card with
-     * credit card number not found
+    /**
+     * Removes Credit Card from list, based on credit card number given.
+     * Returns boolean true if card found and removed, otherwise it returns false
+     * @param creditCardNum the credit card number of the card to remove
+     * @return true if card was found and removed, else false if the card does not exist
      */
     public boolean removeCreditCard(String creditCardNum){
 		for (Iterator iterator = creditCardList.iterator(); iterator.hasNext();){
@@ -64,19 +47,18 @@ public class CreditCardList implements Serializable{
 		return false;
 	}
     
-    /*
-     * Inserts credit card into credit card list 
-     * gives true if operation works, else, returns false 
+    /**
+     * Inserts credit card in to the credit card list
+     * @param creditCard the credit card to insert
+     * @return true if inserted successfully, else false
      */
     public boolean insertCreditCard(CreditCard creditCard){
 		return creditCardList.add(creditCard);
 	}
     
-    
-    
-    
     /**
-     * @return an iterator of the CreditCardList.
+     * Gets an iterator for the credit card list
+     * @return Iterator of the credit card list
      */
     public Iterator getCreditCardList(){
         return creditCardList.iterator();
@@ -86,10 +68,4 @@ public class CreditCardList implements Serializable{
 	public String toString() {
 		return creditCardList.toString();
 	}
-	
-    
-    
-	
 }
-
-

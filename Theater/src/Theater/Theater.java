@@ -26,7 +26,6 @@ class Theater implements Serializable {
     private ClientList clientList;
     private CustomerList customerList;
 	private ShowList showList;
-	private CreditCardList creditCardList;
     public static final int CLIENT_NOT_FOUND = 1;
     public static final int CLIENT_HAS_UPCOMING_SHOW = 2;
     public static final int CUSTOMER_NOT_FOUND = 3;
@@ -41,9 +40,8 @@ class Theater implements Serializable {
      */
     private Theater() {
       clientList = ClientList.instance();
-      showList = ShowList.instance();
       customerList = CustomerList.instance();
-      creditCardList = CreditCardList.instance();
+      showList = ShowList.instance();
     }
     /**
      * Supports the singleton pattern
@@ -106,8 +104,8 @@ class Theater implements Serializable {
      /**
       * Organizes the operations for adding a credit card to an existing 
       * customer.
-      * If credit card already has a owner (customer) then it can be added 
-      * to the list. Message will be displayed.
+      * If there exists a customer with the given ID, then a credit card
+      * will be created, and then added to the customers' card list.
       * 
       * @param customerID owner of the credit card
       * @param cardNumber card number
@@ -115,38 +113,18 @@ class Theater implements Serializable {
       * @return creditCard object if added to the CreditCard List, null otherwise.
       */
      public CreditCard addCreditCard(String customerID, String cardNumber, 
-                                                         String expiryDate) {
-         CreditCard creditCard = new CreditCard(customerID, cardNumber, expiryDate);
-         if (creditCardList.insertCreditCard(creditCard)){
-             return creditCard;
+    		 							String expiryDate) {
+         Customer customer = customerList.search(customerID);
+         
+         if (customer != null) {
+        	 CreditCard creditCard = new CreditCard(customerID, cardNumber, expiryDate);
+        	 if (customer.addCreditCard(creditCard) == true) {
+        		 return creditCard; // credit card was added successfully
+        	 }
+        	 return null; // credit card was unable to be added
          }
-         return null;
+         return null; // no customer found with given ID
      }
-
-    /**
-     * Returns an iterator of client list
-     * @return iterator to the collection
-     */
-    public Iterator getClient() {
-        Iterator client = clientList.getClients();
-        if (client == null) {
-            return(null);
-        } else {
-            return (client);
-        }
-    }
-    /**
-     * Returns an iterator of customer list
-     * @return iterator to the collection
-     */
-    public Iterator getCustomer() {
-        Iterator customer = customerList.getCustomers();
-        if (customer == null) {
-            return(null);
-        } else {
-            return (customer);
-        }
-    }
     
     /**
      * Removes a specific client from the ClientList
@@ -165,7 +143,9 @@ class Theater implements Serializable {
             return (ACTION_COMPLETED);
         }
         return (ACTION_FAILED);
-    }/**
+    }
+    
+    /**
      * Removes a specific customer from the CustomerList
      * @param customertId id of the customer
      * @return a code representing the outcome
@@ -201,7 +181,7 @@ class Theater implements Serializable {
      * Return list of shows
      * @return iterator to the collection 
      */
-    public Iterator getShows(){
+    public Iterator getShowList(){
         Iterator shows = showList.getShowList();
         if (shows == null){
             return null;
@@ -209,6 +189,44 @@ class Theater implements Serializable {
             return shows;
         }
     }
+    
+    /**
+	 * Checks if a specified start and end date of a "show to be" is available
+	 * @param startDate the starting date of a show
+	 * @param endDate the ending date of a show
+	 * @return true if the theater is available (no collisions with existing shows) otherwise, false
+	 */
+    public boolean isTheaterAvailable(Calendar startDate, Calendar endDate){
+		Iterator iterator = Theater.instance().getShowList();
+		Show show;
+		
+		while(iterator.hasNext()) {
+			show = (Show) iterator.next();
+			
+			// check if the startDate is between this shows' start and end dates
+			if (startDate.after(show.getStartDate()) 
+					&& startDate.before(show.getEndDate())) {
+				/*
+				 * the theater is not available for this time (specified start date is between 
+				 * another shows' start and end dates)
+				 */
+				return false;
+			}
+			
+			// check if the endDate is between this shows' start and end dates
+			if (endDate.after(show.getStartDate()) 
+					&& startDate.before(show.getEndDate())) {
+				/*
+				 * the theater is not available for this time (specified end date is between
+				 * another shows' start and end dates 
+				 */
+				return false;
+			}
+			
+		}
+		// no collisions found with existing shows; theater is available for this date range
+		return true;
+	}
 
     /**
      * Retrieves a de-serialized version of the theater from disk
