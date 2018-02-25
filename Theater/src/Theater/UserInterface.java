@@ -199,15 +199,16 @@ public class UserInterface {
     /**
      * Method to be called for adding a customer.
      * Prompts the user for the appropriate values and
-     * uses the appropriate Theater method for adding the client.
-     *  
+     * uses the appropriate Theater method for adding the client
      */
     public void addCustomer() {
         String name = getToken("Enter customer name");
         String address = getToken("Enter address");
         String phone = getToken("Enter phone");
+        String creditCard = getToken("Enter credit card number");
+        String expiryDate = getToken("Enter Credit Card expiration date");
         Customer result;
-        result = theater.addCustomer(name, address, phone);
+        result = theater.addCustomer(name, address, phone, creditCard, expiryDate);
         if (result == null) {
             System.out.println("Could not add customer");
         }
@@ -220,42 +221,55 @@ public class UserInterface {
      *  // Add Logic for add a show only if theater is free during this period
      */
     public void addShows() {
-      Show result;
-      do {
-        String name = getToken("Enter Show name");
-        String clientID = getToken("Enter client id"); 
-        String startDate = getToken("Enter start date of the show(MM/DD/YYYY");
-        //check validity of string date entered
-        if(!isThisDateValid(startDate)) {
-        	System.out.println("\nShow date entered is incorrect; out of range");
-        	//break;
-        }
-        //input is correct and can continue adding info
-        else {
-        String period = getToken("Enter duration of the show"); // Add Logic for add a show only if theater is free during this period
-        
-//        result = theater.addShow(name, clientID, period);
-//        if (result != null) {
-//          System.out.println(result);
-//        } else {
-//          System.out.println("Show could not be added");
-//        }
-        }
-        if (!yesOrNo("Add more shows?")) {
-          break;
-        }
-        
-      } while (true);
+        Show result;
+        do {
+            String name = getToken("Enter Show name");
+            String clientID = getToken("Enter client id"); 
+            Calendar startDate = getDate("Enter start date of the show(MM/DD/YYYY)");
+           
+            // Verify startDate is in range, modify isThisDateValid() method
+            // to get a Calendar-type parameter 
+            if (startDate == null){
+                System.out.println("Invalid Date");
+            }
+            //input is correct and can continue adding info
+            else {
+                int period = getNumber("Enter duration of the show"); 
+                // Add Logic for add a show only if theater is free during this period
+                result = theater.addShow(name, clientID, startDate, period);
+                if (result != null) {
+                    System.out.println(result);
+                } else {
+                    System.out.println("Show could not be added");
+                }
+            }
+            if (!yesOrNo("Add more shows?")) {
+                break;
+            }
+        } while (true);
     }
     /**
-     * 
-     *  
-     * @return Credit Card 
+     * Method to be called for adding a credit card.
+     * Prompts the user for the appropriate values and
+     * uses the appropriate Theater method for adding the credit card.
+     * If credit card on file, adding credit card to list fails.
      */
-//    public CreditCard addCreditCard() {
-//        return null;
-//    }
-
+    public void addCreditCard() {
+        String customerId = getToken("Enter Customer id");
+        String creditCardNumber = getToken("Enter Credit Card Number");
+        String expiryDate = getToken("Enter card expiration date (mm/dd/yy)");
+        // Validating input
+        if (cardHasNoCustomer(customerId, creditCardNumber)){
+            CreditCard result;
+            result = theater.addCreditCard(customerId, creditCardNumber, expiryDate);
+            if (result == null){
+                System.out.println("Credit Card already in file under a different "
+                    + "customer.");
+            } else{
+                System.out.println(result);
+            }
+        }
+    }
     
     /**
    * Method to be called for removing clients.
@@ -371,28 +385,25 @@ public class UserInterface {
             System.out.println("\n**There are no more customers**\n" );
         }
     }
-
     /**
      * Method to be called for displaying shows.
      * Prompts the user for the appropriate values and
      * uses the appropriate Theater method for displaying shows.
      *  
      */
-//    public void getShows() {
-//      Iterator result;
-//      String clientID = getToken("Enter client id");
-//      Calendar date  = getDate("Please enter the date for which you want records as mm/dd/yy");
-//      result = theater.getShows(clientID,date);
-//      if (result == null) {
-//        System.out.println("Invalid client ID");
-//      } else {
-//        while(result.hasNext()) {
-//          Show show = (Show) result.next();
-//          System.out.println(show.getTitle() + "   "   + show.getDate() + "\n");
-//        }
-//        System.out.println("\n  There are no more shows \n" );
-//      }
-//    }
+    public void getShows() {
+      Iterator result;
+        result = theater.getShows();
+        if (result == null) {
+            System.out.println("Empty Show List");
+        } else {
+            while(result.hasNext()) {
+                Show show = (Show) result.next();
+                System.out.println(show.toString());
+            }
+            System.out.println("\n**There are no more shows**\n" );
+        }
+    }
     /**
      * Method to be called for saving the Theater object.
      * Uses the appropriate Theater method for saving.
@@ -426,11 +437,6 @@ public class UserInterface {
         cnfe.printStackTrace();
       }
     }
-    /**
-     * Orchestrates the whole process.
-     * Calls the appropriate method for the different functionalities.
-     *  
-     */
     
     /*
      * Supplementary function to test validation of date (MM/DD/YY) entered in by user
@@ -459,7 +465,25 @@ public class UserInterface {
 		}
 		return true;
 	}
+	// cardHasNoCustomer method verifies if credit card number is in file
+    private boolean cardHasNoCustomer(String customerId, String creditCardNumber) {
+        boolean cardNoCustomer = false;
+        CreditCardList creditCardList = CreditCardList.instance();
+        CreditCard cardNumber = creditCardList.search(creditCardNumber);
+        
+        if (cardNumber == null){
+            cardNoCustomer = true;
+        } else if (cardNumber.getCustomerID().equals(customerId)){
+            cardNoCustomer = false;
+        }
+        return cardNoCustomer;
+    }
 
+    /**
+     * Orchestrates the whole process.
+     * Calls the appropriate method for the different functionalities.
+     *  
+     */
     public void process() {
       int command;
       help();
@@ -475,16 +499,16 @@ public class UserInterface {
                                   break;
           case REMOVE_CUSTOMER:   removeCustomer();
                                   break;
-//          case ADD_CREDIT_CARD:   addCreditCard();
-//                                  break;
-//          case REMOVE_CREDIT_CARD:removeCreditCard();
-//                                  break;
+          case ADD_CREDIT_CARD:   addCreditCard();
+                                  break;
+          case REMOVE_CREDIT_CARD:removeCreditCard();
+                                  break;
           case LIST_CUSTOMERS:    getCustomers();
                                   break;
           case ADD_SHOW:          addShows();
                                   break;
-//          case LIST_SHOWS:        listShows();
-//                                  break;
+          case LIST_SHOWS:        getShows();
+                                  break;
           case STORE_DATA:        storeData();
                                   break;
           case RETRIEVE_DATA:     retrieveData();

@@ -30,27 +30,29 @@ public class Show implements Serializable{
 	 * 
 	 * @param name name of the show
 	 * @param clientID the owner of the show
-	 * @param year the year value for the start date
-	 * @param month the month value for the start date
-	 * @param day the day value for the start date
+         * @param startDate is the start date of the show
 	 * @param duration the number of days the show will be held
 	 */
-	public Show(String name, String clientID, int year, int month, int day, int duration) {
+	public Show(String name, String clientID, Calendar startDate, int duration) {
 		this.name = name;
 		this.clientID = clientID;
 		/*
 		 * month is subtracted by 1 because the month is 0-based (0 = January)
 		 */
-		startDate = Calendar.getInstance(); // get new calendar instance
-		startDate.clear(); // clear the calendars existing values
-		startDate.set(year, month-1, day);
+                this.startDate = Calendar.getInstance(); // get new calendar instance
+                this.startDate.clear(); 
+                this.startDate.set(startDate.get(Calendar.YEAR), 
+                                startDate.get(Calendar.MONTH), 
+                                startDate.get(Calendar.DAY_OF_MONTH));
 		/*
 		 * determines the end date by adding the duration of days onto the start date
 		 */
-		endDate = Calendar.getInstance(); // get new calendar instance
-		endDate.clear(); // clear the calendars existing values
-		endDate.set(year, month-1, day);
-		endDate.add(Calendar.DAY_OF_MONTH, duration);
+		this.endDate = Calendar.getInstance(); // get new calendar instance
+		this.endDate.clear(); // clear the calendars existing values
+                this.endDate.set(startDate.get(Calendar.YEAR), 
+                                startDate.get(Calendar.MONTH), 
+                                startDate.get(Calendar.DAY_OF_MONTH));
+                this.endDate.add(endDate.DATE, duration);
 	}
 
 	/**
@@ -74,7 +76,7 @@ public class Show implements Serializable{
 	 * @return calendar representation of the start date
 	 */
 	public Calendar getStartDate() {
-		return startDate;
+		return this.startDate;
 	}
 	
 	/**
@@ -82,7 +84,7 @@ public class Show implements Serializable{
 	 * @return calendar representation of the end date
 	 */
 	public Calendar getEndDate() {
-		return endDate;
+		return this.endDate;
 	}
 
 	/**
@@ -127,60 +129,24 @@ public class Show implements Serializable{
 		this.endDate = endDate;
 	}
 	
-	/**
-	 * Checks if a specified start and end date of a "show to be" is available
-	 * @param startDate the starting date of a show
-	 * @param endDate the ending date of a show
-	 * @return true if the theater is available (no collisions with existing shows) otherwise, false
-	 */
-	
-	/*public static boolean isTheaterAvailable(Calendar startDate, Calendar endDate){
-		Iterator iterator = Theater.instance().getShowList();
-		Show show;
-		
-		while(iterator.hasNext()) {
-			show = (Show) iterator.next();
-			
-			// check if the startDate is between this shows' start and end dates
-			if (startDate.after(show.getStartDate()) 
-					&& startDate.before(show.getEndDate())) {
-				/*
-				 * the theater is not available for this time (specified start date is between 
-				 * another shows' start and end dates)
-				 */
-	/*			return false;
-			}
-			
-			// check if the endDate is between this shows' start and end dates
-			if (endDate.after(show.getStartDate()) 
-					&& startDate.before(show.getEndDate())) {
-				/*
-				 * the theater is not available for this time (specified end date is between
-				 * another shows' start and end dates 
-				 */
-	/*			return false;
-			}
-			
-		}
-		// no collisions found with existing shows; theater is available for this date range
-		return true;
-	}*/
-	
 	@Override
 	public String toString(){
-		return "Show [name=" + name + " clientID=" + clientID + " startDate=" + dateToString(startDate) 
-				+ " endDate=" + dateToString(endDate) + "]";
+		return "Show [name=\"" + name + "\" clientID=" + clientID +
+                        " startDate=" + dateToString(this.startDate) 
+				+ " endDate=" + dateToString(this.endDate) + "]";
 	}
 	
 	/**
 	 * Gets a custom toString value of a java Calendar date
+         * Since month is based '0', 1 is added to month for displaying purposes
+         * 
 	 * @param date Java Calendar date to convert
 	 * @return String representation of the date
 	 */
 	public static String dateToString(Calendar date) {
-		return "Calendar [year=" + date.get(Calendar.YEAR) + " month=" + date.get(Calendar.MONTH)
-				+ " day=" + date.get(Calendar.DAY_OF_MONTH) + " hour=" + date.get(Calendar.HOUR_OF_DAY) 
-				+ " minute=" + date.get(Calendar.MINUTE) + "]";
+		return "[year=" + date.get(Calendar.YEAR) + 
+                        " month=" + (date.get(Calendar.MONTH) + 1) +
+                        " day=" + date.get(Calendar.DAY_OF_MONTH) + "]";
 	}
 
 }
