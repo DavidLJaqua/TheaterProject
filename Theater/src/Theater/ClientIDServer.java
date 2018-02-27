@@ -18,9 +18,8 @@ public class ClientIDServer implements Serializable{
     private static ClientIDServer serverInstance;
     private int idCounter;
 
-    /**
-     * Creates singleton instance of ClientIDServer
-     */
+    
+    // Creates singleton instance of ClientIDServer
     private ClientIDServer() {
             idCounter = 1;
     }
