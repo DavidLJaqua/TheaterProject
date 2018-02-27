@@ -17,13 +17,17 @@ public class Client implements Serializable {
 	private int balance;
 
 	/**
+	 * 
 	 * Creates a new client object with the given info and set's their balance to 0
+	 * @param name Name of Client 
+	 * @param address Client address 
+	 * @param phoneNum Client phone number
 	 */
 	public Client(String name, String address, String phoneNum){
 		this.name = name;
 		this.address = address;
 		this.phoneNum = phoneNum;
-		balance = 0;
+		balance = 0; // Initial balance 0, teacher requirement.
 
 		// fetch a new client id
 		clientID = CLIENT_STRING + ClientIDServer.instance().getID();
@@ -50,7 +54,7 @@ public class Client implements Serializable {
 	 * @return clients' phone number
 	 */
 	public String getPhoneNum(){
-    	return phoneNum;
+    		return phoneNum;
 	}
 
 	/**
@@ -101,33 +105,6 @@ public class Client implements Serializable {
 		this.balance = balance;
 	}
     
-	/**
-	 * Checks if the client has a current or upcoming show
-	 * @return true if the client has a current or upcoming show
-	 */
-	/*
-	public boolean hasUpcomingShow() {
-		Calendar currentDate = Calendar.getInstance();
-		Iterator iterator = Theater.instance().getShowList();
-		Show show;
-		
-		/*
-		 * Loops through all shows looking for one by the client that
-		 * is currently in progress or has a future end date
-		 */
-	/*	while(iterator.hasNext()) {
-			show = (Show) iterator.next();
-			if (show.getClientId().equals(clientID)
-					&& show.getEndDate().after(currentDate)) {
-				/*
-				 * this show ends after the current date
-				 */
-	/*			return true; // client has a current/future show
-			}
-		}
-		return false; // client has no current/future shows
-	}*/
-	
 	@Override
 	public String toString(){
 		return "Client [name=" + name + " address=" + address + " phoneNum=" + phoneNum 
