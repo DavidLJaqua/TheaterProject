@@ -295,6 +295,8 @@ class Theater implements Serializable {
 	        input.readObject();
 	        ClientIDServer.retrieve(input);
 	        CustomerIdServer.retrieve(input);
+	        input.close();
+	        file.close();
 	        return theater;
     	} else {
     		/*
@@ -321,6 +323,8 @@ class Theater implements Serializable {
             output.writeObject(theater);
             output.writeObject(ClientIDServer.instance()); 
             output.writeObject(CustomerIdServer.instance());
+            output.close();
+            file.close();
             return true;
         } catch(IOException ioe) {
             ioe.printStackTrace();
