@@ -1,10 +1,9 @@
 package Theater;
 
-
 /*
-Author : Vanessa 
-code for CustomerIdServer based heavily upon the MemberIdServer class,
-since they have analogous functionality 
+ * Author : Vanessa 
+ * code for CustomerIdServer based heavily upon the MemberIdServer class,
+ * since they have analogous functionality 
 */
 
 /*
@@ -34,10 +33,8 @@ import java.io.*;
 public class CustomerIdServer implements Serializable {
  private  int idCounter;
  private static CustomerIdServer server;
- /*
-  * Private constructor for singleton pattern
-  * 
-  */
+ 
+ // Private constructor for singleton pattern
  private CustomerIdServer() {
    idCounter = 1;
  }
@@ -54,7 +51,7 @@ public class CustomerIdServer implements Serializable {
    }
  }
  /**
-  * Getter for id
+  * getId() gets customer id
   * @return id of the Customer
   */
  public int getId() {
