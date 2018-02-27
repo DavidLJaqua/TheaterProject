@@ -277,6 +277,22 @@ class Theater implements Serializable {
 		// no collisions found with existing shows; theater is available for this date range
 		return true;
 	}
+    
+    /**
+     * Returns true if ID entered is of an existing client in list.
+     * A go-between function for UI function of same name. Main
+     * purpose is to be used in addShows to ensure only add shows
+     * to existing clients
+     * @return true if ID matches existing client in list, else false
+     */
+    public boolean isValidClient(String clientID) {
+    	Client client = clientList.search(clientID);
+        if (client == null) {
+            return(false);
+        }
+        else return true;
+    }
+
 
     /**
      * Retrieves a de-serialized version of the theater from disk

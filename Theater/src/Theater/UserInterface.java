@@ -221,32 +221,40 @@ public class UserInterface {
      *  // Add Logic for add a show only if theater is free during this period
      */
     public void addShows() {
-        Show result;
+    	Show result;
         do {
             String name = getToken("Enter Show name");
             String clientID = getToken("Enter client id"); 
-            Calendar startDate = getDate("Enter start date of the show(MM/DD/YYYY)");
-           
-            // Verify startDate is in range, modify isThisDateValid() method
-            // to get a Calendar-type parameter 
-            if (startDate == null){
-                System.out.println("Invalid Date");
-            }
-            //input is correct and can continue adding info
-            else {
-                int period = getNumber("Enter duration of the show"); 
-                // Add Logic for add a show only if theater is free during this period
-                result = theater.addShow(name, clientID, startDate, period);
-                if (result != null) {
-                    System.out.println(result);
-                } else {
-                    System.out.println("Show could not be added");
-                }
+            if(!theater.isValidClient(clientID)) {
+            	System.out.println("Invalid client ID entered.");
+            } else {            
+            	Calendar startDate = getDate("Enter start date of the show(MM/DD/YYYY)");                       
+            	// Verify startDate is in range, modify isThisDateValid() method
+            	// to get a Calendar-type parameter 
+            	if (startDate == null){ 
+            		System.out.println("Invalid Date");    
+            	}         
+            	String strdate = startDate.toString();
+            	if (!isThisDateValid(strdate)) {
+            		System.out.println("Invalid Date - values out of range");
+            	} 
+            	//input is correct and can continue adding info           
+            	else {                         		
+            		int period = getNumber("Enter duration of the show");                 
+            		// Add Logic for add a show only if theater is free during this period                
+            		result = theater.addShow(name, clientID, startDate, period);                
+            		if (result != null) {                  
+            			System.out.println(result);                
+            		} else {
+            			System.out.println("Show could not be added");                
+            		}
+            	}
             }
             if (!yesOrNo("Add more shows?")) {
                 break;
             }
         } while (true);
+    	
     }
     /**
      * Method to be called for adding a credit card.
@@ -513,6 +521,19 @@ public class UserInterface {
         }
         return false; // no customers found with the given card number
     }
+    
+    /**
+     * Supplementary function to validate clerk's entered ID. Primarily
+     * used in addShows to ensure only enterring shows for existing clients
+     * @return True, if clientID entered is of existing client in list, else false
+     */
+    private boolean isValidClient(String clientID) {
+    	if(isValidClient(clientID))
+    		return true;
+    	else 
+    		return false;
+    }
+    
     /**
      * Orchestrates the whole process.
      * Calls the appropriate method for the different functionalities.
