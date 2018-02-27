@@ -1,35 +1,17 @@
 package Theater;
 
-/**
- * 
- * @author Brahma Dathan and Sarnath Ramnath
- * @Copyright (c) 2010
- 
- * Redistribution and use with or without
- * modification, are permitted provided that the following conditions
- * are met:
- *
- *   - the use is for academic purpose only
- *   - Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *   - Neither the name of Brahma Dathan or Sarnath Ramnath
- *     may be used to endorse or promote products derived
- *     from this software without specific prior written permission.
- *
- * The authors do not make any claims regarding the correctness of the code in this module
- * and are not responsible for any loss or damage resulting from its use.  
- */
-import static Theater.Theater.CLIENT_NOT_FOUND;
 import java.util.*;
 import java.text.*;
 import java.io.*;
+
 /**
  * 
- * This class implements the user interface for the Library project.
+ * This class implements the user interface for the Theater project.
  * The commands are encoded as integers using a number of
  * static final variables. A number of utility methods exist to
  * make it easier to parse the input.
  *
+ * @author Vanessa Esaw, David Jaqua, Franklin Ortega
  */
 public class UserInterface {
     private static UserInterface userInterface;
@@ -217,8 +199,8 @@ public class UserInterface {
     /**
      * Method to be called for adding a show.
      * Prompts the user for the appropriate values and
-     * uses the appropriate Theater method for adding the show.
-     *  // Add Logic for add a show only if theater is free during this period
+     * uses the appropriate Theater method for adding only if theater is free 
+     * during this period of the show.
      */
     public void addShows() {
     	Show result;
@@ -280,7 +262,8 @@ public class UserInterface {
         }
     }
     /**
-   * Method to be called for removing clients.
+   * Method to be called for removing clients. Removes clients only if client
+   * has no current show playing or upcoming shows.
    * Prompts the user for the appropriate values and
    * uses the appropriate Theater method for removing clients.
    *  
@@ -316,7 +299,7 @@ public class UserInterface {
    * Method to be called for removing customers.
    * Prompts the user for the appropriate values and
    * uses the appropriate Theater method for removing customers.
-   *  Catches return code to prompt to the user.
+   * Catches return code to prompt to the user.
    */
     public void removeCustomer() {
         // result: int variable to save remove result
@@ -347,7 +330,8 @@ public class UserInterface {
         } while (true);
     }
    /**
-    * Method to be called for removing a customers credit card
+    * Method to be called for removing a customer's credit card. 
+    * It removes a credit card if customer has more than one credit card.
     * Prompts user for id and card number, and uses appropriate theater method 
     * for removing that customers' credit card.
     * Catches return code to display to the user.
@@ -499,15 +483,14 @@ public class UserInterface {
 		}
 		return true;
 	}
-	/**
-	 * Checks if the given card already exists in the database
-	 * @return True, if the card already exists, else false.
-	 */
+   /**
+    * Checks if the given card already exists in the database
+    * @return true if the card already exists, else false.
+    */
     private boolean doesCardAlreadyExist(String creditCardNumber) {
-        /*
-         * Loops through all customers looking to see if any of them already
-         * have a credit card with the given number.
-         */
+        
+        // Loops through all customers looking to see if any of them already
+        // have a credit card with the given number.
         Iterator custIterator = theater.getCustomerList();
         while (custIterator.hasNext()) {
         	Customer customer = (Customer) custIterator.next();
