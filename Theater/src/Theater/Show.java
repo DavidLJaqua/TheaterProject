@@ -5,9 +5,9 @@ import java.util.Calendar;
 import java.util.Iterator;
 
 /** 
- * Show class represents a show/play which is held on in a theater on a range of days
- * It has a show name, the client id who owns the show, date for show release, and 
- * a date for the show finale.
+ * Show class represents a show/play which is held in theater on a range of days
+ * It has a show name, the client id for the client who owns the show, date for
+ * show release, and a date for the show finale.
  *
  * @author Franklin Ortega & David Jaqua
  */
@@ -138,8 +138,8 @@ public class Show implements Serializable{
 	
 	/**
 	 * Gets a custom toString value of a java Calendar date
-     * Since month is based '0', 1 is added to month for displaying purposes
-     * 
+     	 * Since month is 0 based, 1 is added to month for display purposes
+     	 * 
 	 * @param date Java Calendar date to convert
 	 * @return String representation of the date
 	 */
