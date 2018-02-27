@@ -271,7 +271,6 @@ public class UserInterface {
             }
         }
     }
-    
     /**
    * Method to be called for removing clients.
    * Prompts the user for the appropriate values and
@@ -309,9 +308,8 @@ public class UserInterface {
    * Method to be called for removing customers.
    * Prompts the user for the appropriate values and
    * uses the appropriate Theater method for removing customers.
-   *  
+   *  Catches return code to prompt to the user.
    */
-
     public void removeCustomer() {
         // result: int variable to save remove result
         // DoWhile loop for removing customers
@@ -331,6 +329,7 @@ public class UserInterface {
                     break;
                 case Theater.ACTION_FAILED:
                     System.out.println("Could not remove Customer.");
+                    break;
                 default: 
                     System.out.println("An error has ocurred.");
             }
@@ -339,14 +338,39 @@ public class UserInterface {
             }
         } while (true);
     }
-
-    /**
-     * 
-     *  
-     */
+   /**
+    * Method to be called for removing a customers credit card
+    * Prompts user for id and card number, and uses appropriate theater method 
+    * for removing that customers' credit card.
+    * Catches return code to display to the user.
+    */
     public void removeCreditCard() {
+    	String customerID = getToken("Enter Customer Id:");
+    	String creditCardNumber = getToken("Enter Credit Card Number:");
+    	int result = theater.removeCreditCard(customerID, creditCardNumber);
+    	
+    	switch(result) {
+    		case Theater.ACTION_COMPLETED:
+    			System.out.println("Customers' credit card was removed.");
+    			break;
+    		case Theater.CUSTOMER_NOT_FOUND:
+    			System.out.println("Customer not found in Customer List.");
+    			break;
+    		case Theater.CUSTOMER_HAS_ONE_CARD_ONLY:
+    			System.out.println("Customer has only one credit card. "
+    					+ "All customers must have atleast one card.");
+    			break;
+    		case Theater.CREDIT_CARD_NOT_FOUND:
+    			System.out.println("The customer does not have a credit card with "
+    					+ "that number.");
+    			break;
+    		case Theater.ACTION_FAILED:
+    			System.out.println("Could not remove customers' Credit Card");
+    			break;
+    		default: 
+                System.out.println("An error has ocurred.");
+    	}
     }
-
     /**
      * Method to be called for listing all clients.
      * Prompts the user for the appropriate values and
@@ -356,7 +380,8 @@ public class UserInterface {
     public void getClients() {
         Iterator result;
         result = theater.getClientList();
-        if (result == null) {
+        if (!result.hasNext()) {
+        	// hasNext returns false if there are no contents in the list
             System.out.println("Client List is empty.");
         } else {
             while(result.hasNext()) {
@@ -366,7 +391,6 @@ public class UserInterface {
             System.out.println("\n**There are no more clients** \n" );
         }
     }
-
     /**
      * Method to be called for listing all customers.
      * Prompts the user for the appropriate values and
@@ -376,8 +400,9 @@ public class UserInterface {
     public void getCustomers() {
         Iterator result;
         result = theater.getCustomerList();
-        if (result == null) {
-            System.out.println("Empty List");
+        if (!result.hasNext()) {
+        	// hasNext returns false if there are no contents in the list
+            System.out.println("Customer List is empty.");
         } else {
             while(result.hasNext()) {
                 Customer customer = (Customer) result.next();
@@ -395,8 +420,9 @@ public class UserInterface {
     public void getShows() {
       Iterator result;
         result = theater.getShowList();
-        if (result == null) {
-            System.out.println("Empty Show List");
+        if (result.hasNext()) {
+        	// hasNext returns false if there are no contents in the list
+            System.out.println("Show List is empty.");
         } else {
             while(result.hasNext()) {
                 Show show = (Show) result.next();
@@ -431,14 +457,13 @@ public class UserInterface {
                   + "from the file TheaterData \n" );
           theater = tempTheater;
         } else {
-          System.out.println("File doesnt exist; creating new theater" );
+          System.out.println("File doesnt exist; creating new theater \n" );
           theater = Theater.instance();
         }
       } catch(Exception cnfe) {
         cnfe.printStackTrace();
       }
     }
-    
     /*
      * Supplementary function to test validation of date (MM/DD/YY) entered in by user
      * If month or date is out of range, returns false. Else, returns true
@@ -466,7 +491,6 @@ public class UserInterface {
 		}
 		return true;
 	}
-
 	/**
 	 * Checks if the given card already exists in the database
 	 * @return True, if the card already exists, else false.
@@ -487,9 +511,8 @@ public class UserInterface {
     			}
     		}
         }
-        return false; // no customers found with the given card numbere
+        return false; // no customers found with the given card number
     }
-    
     /**
      * Orchestrates the whole process.
      * Calls the appropriate method for the different functionalities.
@@ -528,7 +551,7 @@ public class UserInterface {
                                   break;
         }
       }
-        storeData();
+      storeData();
     }
     /**
      * The method to start the application. Simply calls process().

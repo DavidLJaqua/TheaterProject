@@ -51,10 +51,19 @@ public final class Customer implements Serializable {
         return creditCardList.insertCreditCard(creditCard);
     }
     
+    public boolean removeCreditCard(String creditCardNumber) {
+    	return creditCardList.removeCreditCard(creditCardNumber);
+    }
+    
+    public CreditCard searchCreditCard(String creditCardNumber) {
+    	return creditCardList.search(creditCardNumber);
+    }
+    
     public int getNumberOfCards(){
     	Iterator iterator = creditCardList.getCreditCardList();
     	int count = 0;
     	while(iterator.hasNext()) {
+    		iterator.next();
     		count++;
     	}
         return count;

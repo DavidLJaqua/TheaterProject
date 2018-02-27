@@ -4,6 +4,7 @@
 
 package Theater;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -32,6 +33,7 @@ class Theater implements Serializable {
     public static final int CUSTOMER_HAS_ONE_CARD_ONLY = 4;
     public static final int ACTION_COMPLETED = 5;
     public static final int ACTION_FAILED = 6;
+    public static final int CREDIT_CARD_NOT_FOUND = 7;
     private static Theater theater;
 
     /**
@@ -136,9 +138,9 @@ class Theater implements Serializable {
         if (client == null) {
             return(CLIENT_NOT_FOUND);
         }
-        //if (client.hasUpcomingShow()) {     // Need to be implemented
-        //	return(CLIENT_HAS_UPCOMING_SHOW);
-        //}
+        if (doesClientHaveUpcomingShow(clientID)) {
+        	return(CLIENT_HAS_UPCOMING_SHOW);
+        }
         if (clientList.removeClient(clientID)) {
             return (ACTION_COMPLETED);
         }
@@ -148,7 +150,7 @@ class Theater implements Serializable {
     /**
      * Removes a specific customer from the CustomerList
      * @param customertId id of the customer
-     * @return a code representing the outcome
+     * @return a return code representing the outcome of the action
      */
     public int removeCustomer(String customerID) {
         Customer customer = customerList.search(customerID);
@@ -159,6 +161,28 @@ class Theater implements Serializable {
             return (ACTION_COMPLETED);
         }
         return (ACTION_FAILED);
+    }
+    
+    public int removeCreditCard(String customerID, String creditCardNumber) {
+    	Customer customer = customerList.search(customerID);
+    	if (customer == null) {
+    		return (CUSTOMER_NOT_FOUND);
+    	}
+    	if (customer.getNumberOfCards() == 1) {
+    		return (CUSTOMER_HAS_ONE_CARD_ONLY);
+    	}
+    	if (customer.searchCreditCard(creditCardNumber) == null) {
+    		return (CREDIT_CARD_NOT_FOUND);
+    	}
+    	for (Iterator iterator = customer.getCreditCardList(); iterator.hasNext();) {
+    		CreditCard card = (CreditCard) iterator.next();
+    		if (card.getCardNum().equals(creditCardNumber)) {
+    			if (customer.removeCreditCard(creditCardNumber)) {
+    				return (ACTION_COMPLETED);
+    			}
+    		}
+    	}
+    	return (ACTION_FAILED);
     }
     
     /**
@@ -189,6 +213,32 @@ class Theater implements Serializable {
             return shows;
         }
     }
+    
+    /**
+	 * Checks if the client has a current or upcoming show
+	 * @return true if the client has a current or upcoming show
+	 */
+	public boolean doesClientHaveUpcomingShow(String clientID) {
+		Calendar currentDate = Calendar.getInstance();
+		Iterator iterator = showList.getShowList();
+		Show show;
+		
+		/*
+		 * Loops through all shows looking for one by the client that
+		 * is currently in progress or has a future end date
+		 */
+		while(iterator.hasNext()) {
+			show = (Show) iterator.next();
+			if (show.getClientId().equals(clientID)
+					&& show.getEndDate().after(currentDate)) {
+				/*
+				 * this show ends after the current date
+				 */
+				return true; // client has a current/future show
+			}
+		}
+		return false; // client has no current/future shows
+	}
     
     /**
 	 * Checks if a specified start and end date of a "show to be" is available
@@ -234,12 +284,24 @@ class Theater implements Serializable {
      */
     public static Theater retrieve() {
       try {
-        FileInputStream file = new FileInputStream("TheaterData");
-        ObjectInputStream input = new ObjectInputStream(file);
-        input.readObject();
-        ClientIDServer.retrieve(input);
-        CustomerIdServer.retrieve(input); 
-        return theater;
+    	File theaterFile = new File("TheaterData");
+    	if (theaterFile.exists()) {
+    		/*
+    		 * the theater file exists, load its' contents and the contents
+    		 * of the ClientIDServer and CustomerIDServer
+    		 */
+	    	FileInputStream file = new FileInputStream(theaterFile);
+	        ObjectInputStream input = new ObjectInputStream(file);
+	        input.readObject();
+	        ClientIDServer.retrieve(input);
+	        CustomerIdServer.retrieve(input);
+	        return theater;
+    	} else {
+    		/*
+    		 * the theater file does not exist, return null
+    		 */
+    		return null;
+    	}
       } catch(IOException ioe) {
         ioe.printStackTrace();
         return null;
@@ -295,7 +357,6 @@ class Theater implements Serializable {
         e.printStackTrace();
       }
     }
-
     /** 
      * String form of the theater
      * 
