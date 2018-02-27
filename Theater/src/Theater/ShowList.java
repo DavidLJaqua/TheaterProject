@@ -1,9 +1,5 @@
 package Theater;
 
-/**
- * Project: OOAD_Project_1_Theater
- */
-
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -12,7 +8,9 @@ import java.util.List;
 
 
 /** 
- * ShowList class 
+ * ShowList class is a singleton class that holds the list of shows that
+ * are inside the system. Methods such as inserting, searching,
+ * and deleting shows from the list.
  *
  * @author Franklin Ortega
  * Date: Feb 23, 2018
@@ -40,10 +38,10 @@ public class ShowList implements Serializable {
     }
 
     /**
-     * Search for a specific show based in a show name.
+     * Search for a specific show based on it's show name.
      * 
-     * @param showName name of the show used to search a specific show in list.
-     * @return show object.
+     * @param showName name of the show used to search for.
+     * @return show object if one is found. Otherwise, null
      */
     public Show search(String showName){
         for(Iterator iterator = showList.iterator(); iterator.hasNext();){
@@ -56,9 +54,9 @@ public class ShowList implements Serializable {
     }
 
     /**
-     * Adds customer to Customer List.
+     * Inserts the given show into the show list.
      * 
-     * @param show object that will be saved in show list.
+     * @param show The show object that will be saved in show list.
      * @return true if show has been added to the list, false otherwise. 
      */
     public boolean insertShow(Show show){
@@ -66,11 +64,10 @@ public class ShowList implements Serializable {
     }
 
     /**
-     * Removes a customer from the CustomerList, it uses customer id for 
-     * identifying customer on the list.
+     * Removes a show with the given showName from the showList.
      * 
      * @param showName name of the show to be removed
-     * @return true if customer has been removed, false otherwise.
+     * @return true if a show with the showName has been removed, false otherwise.
      */
     public boolean removeShow(String showName){
         for (Iterator iterator = showList.iterator(); iterator.hasNext();){
@@ -85,13 +82,13 @@ public class ShowList implements Serializable {
     }
 
     /**
-     * 
+     * Gets an iterator for the ShowList.
      * @return an iterator of the Show List.
      */
     public Iterator getShowList(){
         return showList.iterator();
     }
-
+    
     @Override
     public String toString() {
         return showList.toString();
