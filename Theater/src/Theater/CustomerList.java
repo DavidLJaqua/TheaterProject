@@ -1,7 +1,3 @@
-/**
- * Project: OOAD_Project_1_Theater
- */
-
 package Theater;
 
 import java.io.Serializable;
