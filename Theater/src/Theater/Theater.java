@@ -36,10 +36,9 @@ class Theater implements Serializable {
     public static final int CREDIT_CARD_NOT_FOUND = 7;
     private static Theater theater;
 
-    /**
-     * Private for the singleton pattern
-     * Creates the client, show, and customer collection objects
-     */
+    
+    // Private for the singleton pattern
+    // Creates the client, show, and customer collection objects
     private Theater() {
       clientList = ClientList.instance();
       customerList = CustomerList.instance();
@@ -162,7 +161,13 @@ class Theater implements Serializable {
         }
         return (ACTION_FAILED);
     }
-    
+    /*
+    * Removes a credit card from the collection. If the credit card is
+    * the only one the customer has, then credit card cannot be removed.
+    * @param customerID customer id owner of the card
+    * @param creditCardNumber credit Card number 
+    * @return a return code representing the outcome of the action
+    */
     public int removeCreditCard(String customerID, String creditCardNumber) {
     	Customer customer = customerList.search(customerID);
     	if (customer == null) {
@@ -216,24 +221,22 @@ class Theater implements Serializable {
     
     /**
 	 * Checks if the client has a current or upcoming show
-	 * @return true if the client has a current or upcoming show
+	 * @return true if the client has a current or upcoming show, false otherwise
 	 */
 	public boolean doesClientHaveUpcomingShow(String clientID) {
 		Calendar currentDate = Calendar.getInstance();
 		Iterator iterator = showList.getShowList();
 		Show show;
 		
-		/*
-		 * Loops through all shows looking for one by the client that
-		 * is currently in progress or has a future end date
-		 */
+		
+		// Loops through all shows looking for one by the client that
+		// is currently in progress or has a future end date
 		while(iterator.hasNext()) {
 			show = (Show) iterator.next();
 			if (show.getClientId().equals(clientID)
 					&& show.getEndDate().after(currentDate)) {
-				/*
-				 * this show ends after the current date
-				 */
+				
+				// this show ends after the current date
 				return true; // client has a current/future show
 			}
 		}
@@ -256,20 +259,18 @@ class Theater implements Serializable {
 			// check if the startDate is between this shows' start and end dates
 			if (startDate.after(show.getStartDate()) 
 					&& startDate.before(show.getEndDate())) {
-				/*
-				 * the theater is not available for this time (specified start date is between 
-				 * another shows' start and end dates)
-				 */
+			
+				// the theater is not available for this time (specified start date is between 
+				// another shows' start and end dates)
 				return false;
 			}
 			
 			// check if the endDate is between this shows' start and end dates
 			if (endDate.after(show.getStartDate()) 
 					&& startDate.before(show.getEndDate())) {
-				/*
-				 * the theater is not available for this time (specified end date is between
-				 * another shows' start and end dates 
-				 */
+				
+				// the theater is not available for this time (specified end date is between
+				// another shows' start and end dates 
 				return false;
 			}
 			
@@ -296,16 +297,15 @@ class Theater implements Serializable {
 
     /**
      * Retrieves a de-serialized version of the theater from disk
-     * @return a Theater object
+     * @return a Theater object if exists, false otherwise
      */
     public static Theater retrieve() {
       try {
     	File theaterFile = new File("TheaterData");
     	if (theaterFile.exists()) {
-    		/*
-    		 * the theater file exists, load its' contents and the contents
-    		 * of the ClientIDServer and CustomerIDServer
-    		 */
+    		
+    		// the theater file exists, load its' contents and the contents
+    		// of the ClientIDServer and CustomerIDServer
 	    	FileInputStream file = new FileInputStream(theaterFile);
 	        ObjectInputStream input = new ObjectInputStream(file);
 	        input.readObject();
@@ -315,9 +315,7 @@ class Theater implements Serializable {
 	        file.close();
 	        return theater;
     	} else {
-    		/*
-    		 * the theater file does not exist, return null
-    		 */
+    		// the theater file does not exist, return null
     		return null;
     	}
       } catch(IOException ioe) {
@@ -379,12 +377,9 @@ class Theater implements Serializable {
     }
     /** 
      * String form of the theater
-     * 
      */
     @Override
     public String toString() {
-        return "Theater{" + "clientList=" + clientList + '}';
+        return "Theater{" + "clientList=" + clientList + ", customerList=" + customerList + ", showList=" + showList + '}';
     }
-
-
 } // End of class Theater
