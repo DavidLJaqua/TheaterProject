@@ -19,9 +19,8 @@ public class ClientList implements Serializable{
 	private static ClientList clientListInstance;
 	private List clientList = new LinkedList<>();
 
-	/**
-	 * Creates singleton instance of the ClientList
-	 */
+	
+	// Creates singleton instance of the ClientList
 	private ClientList() {
 	}
 	
@@ -54,8 +53,8 @@ public class ClientList implements Serializable{
 	
 	/**
 	 * Inserts the client into the list
-	 * @param client to insert
-	 * @return whether or not the client was able to be inserted
+	 * @param client an object of the Client class.
+	 * @return true if client added to clientList, false otherwise.
 	 */
 	public boolean insertClient(Client client){
 		return clientList.add(client);
