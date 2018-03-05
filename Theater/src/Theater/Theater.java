@@ -44,6 +44,7 @@ class Theater implements Serializable {
       customerList = CustomerList.instance();
       showList = ShowList.instance();
     }
+    
     /**
      * Supports the singleton pattern
      * 
@@ -57,6 +58,7 @@ class Theater implements Serializable {
         return theater;
       }
     }
+    
     /**
      * Organizes the operations for adding a client
      * @param name client name
@@ -71,6 +73,7 @@ class Theater implements Serializable {
       }
       return null;
     }
+    
     /**
     * Organizes the operations for adding a show
     * @param name show name
@@ -161,13 +164,14 @@ class Theater implements Serializable {
         }
         return (ACTION_FAILED);
     }
-    /*
-    * Removes a credit card from the collection. If the credit card is
-    * the only one the customer has, then credit card cannot be removed.
-    * @param customerID customer id owner of the card
-    * @param creditCardNumber credit Card number 
-    * @return a return code representing the outcome of the action
-    */
+    
+    /**
+     * Removes a credit card from the collection. If the credit card is
+     * the only one the customer has, then credit card cannot be removed.
+     * @param customerID customer id owner of the card
+     * @param creditCardNumber credit Card number 
+     * @return a return code representing the outcome of the action
+     */
     public int removeCreditCard(String customerID, String creditCardNumber) {
     	Customer customer = customerList.search(customerID);
     	if (customer == null) {
@@ -243,6 +247,23 @@ class Theater implements Serializable {
 		return false; // client has no current/future shows
 	}
     
+	/**
+	 * Determines whether the two given dates are the same. Two dates are the same
+	 * if their day, month, and year values are the same. Does not take into account
+	 * Timezones, hours, minutes, or seconds.
+	 * @param date1 The first date
+	 * @param date2 The second date
+	 * @return true if the dates are the same, otherwise, false
+	 */
+	public boolean areDatesEqual(Calendar date1, Calendar date2) {
+		if (date1.get(Calendar.DAY_OF_MONTH) == date2.get(Calendar.DAY_OF_MONTH)
+				&& date1.get(Calendar.MONTH) == date2.get(Calendar.MONTH)
+				&& date1.get(Calendar.YEAR) == date2.get(Calendar.YEAR)) {
+			return true;
+		}
+		return false;
+	}
+	
     /**
 	 * Checks if a specified start and end date of a "show to be" is available
 	 * @param startDate the starting date of a show
@@ -256,6 +277,15 @@ class Theater implements Serializable {
 		while(iterator.hasNext()) {
 			show = (Show) iterator.next();
 			
+			// check if the start or endDate are the same as another shows' start or end date
+			if (areDatesEqual(startDate, show.getStartDate())
+					|| areDatesEqual(startDate, show.getEndDate())
+					|| areDatesEqual(endDate, show.getStartDate())
+					|| areDatesEqual(endDate, show.getEndDate())) {
+				// the theater is not available for this time.
+				// the start or end date conflicts with another show's start or end date
+				return false;
+			}
 			// check if the startDate is between this shows' start and end dates
 			if (startDate.after(show.getStartDate()) 
 					&& startDate.before(show.getEndDate())) {
@@ -294,7 +324,6 @@ class Theater implements Serializable {
         else return true;
     }
 
-
     /**
      * Retrieves a de-serialized version of the theater from disk
      * @return a Theater object if exists, false otherwise
@@ -308,7 +337,7 @@ class Theater implements Serializable {
     		// of the ClientIDServer and CustomerIDServer
 	    	FileInputStream file = new FileInputStream(theaterFile);
 	        ObjectInputStream input = new ObjectInputStream(file);
-	        input.readObject();
+	        theater = (Theater) input.readObject();
 	        ClientIDServer.retrieve(input);
 	        CustomerIdServer.retrieve(input);
 	        input.close();
@@ -326,6 +355,7 @@ class Theater implements Serializable {
         return null;
       }
     }
+    
     /**
      * Serializes the Theater object
      * @return true if the data could be saved
@@ -345,36 +375,7 @@ class Theater implements Serializable {
             return false;
         }
     }
-    /**
-     * Writes the object to the output stream
-     * @param output the stream to be written to
-     */
-    private void writeObject(java.io.ObjectOutputStream output) {
-      try {
-        output.defaultWriteObject();
-        output.writeObject(theater);
-      } catch(IOException ioe) {
-        System.out.println(ioe);
-      }
-    }
-    /**
-     * Reads the object from a given stream
-     * @param input the stream to be read
-     */
-    private void readObject(java.io.ObjectInputStream input) {
-      try {
-        input.defaultReadObject();
-        if (theater == null) {
-          theater = (Theater) input.readObject();
-        } else {
-          input.readObject();
-        }
-      } catch(IOException ioe) {
-        ioe.printStackTrace();
-      } catch(Exception e) {
-        e.printStackTrace();
-      }
-    }
+    
     /** 
      * String form of the theater
      */

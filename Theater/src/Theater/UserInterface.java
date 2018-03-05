@@ -94,33 +94,50 @@ public class UserInterface {
      * 
      */
     public int getNumber(String prompt) {
-      do {
-        try {
-          String item = getToken(prompt);
-          Integer number = Integer.valueOf(item);
-          return number.intValue();
-        } catch (NumberFormatException nfe) {
-          System.out.println("Please input a number ");
-        }
-      } while (true);
+		do {
+			try {
+				String item = getToken(prompt);
+				Integer number = Integer.valueOf(item);
+				return number.intValue();
+			} catch (NumberFormatException nfe) {
+				System.out.println("Please input a number ");
+			}
+		} while (true);
     }
     /**
      * Prompts for a date and gets a date object
-     * @param prompt the prompt
-     * @return the data as a Calendar object
+     * @param prompt the prompt for the user
+     * @return the data as a Calendar object if date is valid, otherwise null (not valid date)
      */
     public Calendar getDate(String prompt) {
-      do {
-        try {
-          Calendar date = new GregorianCalendar();
-          String item = getToken(prompt);
-          DateFormat dateFormat = SimpleDateFormat.getDateInstance(DateFormat.SHORT);
-          date.setTime(dateFormat.parse(item));
-          return date;
-        } catch (Exception fe) {
-          System.out.println("Please input a date as mm/dd/yy");
-        }
-      } while (true);
+    	String item;
+    	while (true) {
+    		item = getToken(prompt);
+    		if (item.contains("/")) {
+    			if (item.split("/").length == 3) {
+    				break; // valid date length, proceed to calculating validity
+    			}
+    			System.out.println("Invalid date. Must contain -'s. "
+    					+ "Formatted like MM/DD/YYYY");
+    		} else {
+    			System.out.println("Invalid date. Must contain -'s. "
+    					+ "Formatted like MM/DD/YYYY");
+    		}
+    	}
+    	String[] parts = item.split("/");
+    	Calendar date = Calendar.getInstance();
+    	date.clear();
+    	date.setLenient(false);
+    	date.set(Integer.valueOf(parts[2]), 
+    			Integer.valueOf(parts[0])-1, // month is 0 index so we subtract 1 from the given integer
+    			Integer.valueOf(parts[1])); // sets the year, month, day values for the calendar
+    	try {
+    		date.getTime(); // will throw an exception if the date given is not valid
+    	} catch(Exception e) {
+    		System.out.println("Invalid date");
+    		return null;
+    	}
+    	return date;
     }
     /**
      * Prompts for a command from the keyboard
@@ -209,28 +226,35 @@ public class UserInterface {
             String clientID = getToken("Enter client id"); 
             if(!theater.isValidClient(clientID)) {
             	System.out.println("Invalid client ID entered.");
-            } else {            
-            	Calendar startDate = getDate("Enter start date of the show(MM/DD/YYYY)");                       
-            	// Verify startDate is in range, modify isThisDateValid() method
-            	// to get a Calendar-type parameter 
-            	if (startDate == null){ 
-            		System.out.println("Invalid Date");    
-            	}         
-            	String strdate = startDate.toString();
-            	if (!isThisDateValid(strdate)) {
-            		System.out.println("Invalid Date - values out of range");
-            	} 
-            	//input is correct and can continue adding info           
-            	else {                         		
-            		int period = getNumber("Enter duration of the show");                 
-            		// Add Logic for add a show only if theater is free during this period                
-            		result = theater.addShow(name, clientID, startDate, period);                
-            		if (result != null) {                  
-            			System.out.println(result);                
+            } else {
+            	Calendar startDate;
+            	while (true) {
+            		startDate = getDate("Enter start date of the show(MM/DD/YYYY)");
+            		if (startDate != null) {
+            			break; // valid date entered
             		} else {
-            			System.out.println("Show could not be added");                
+            			System.out.println("Invalid Date. Try again.");
             		}
             	}
+            	//input is correct and can continue adding info                                   		
+				int period = getNumber("Enter duration of the show (in days)");
+				
+				// check if the theater is available for this range of dates
+				Calendar endDate = (Calendar) startDate.clone();
+				endDate.add(Calendar.DAY_OF_MONTH, period);
+				if (Theater.instance().isTheaterAvailable(startDate, endDate)) {
+					// all go for creating the show
+					result = theater.addShow(name, clientID, startDate, period);
+					if (result != null) {
+						System.out.println(result);
+					} else {
+						System.out.println("Show could not be added");
+					}
+				} else {
+					System.out.println("Theater is not available for the timeframe");
+					System.out.println(Show.dateToString(startDate) + " TO " 
+										+ Show.dateToString(endDate));
+				}
             }
             if (!yesOrNo("Add more shows?")) {
                 break;
@@ -261,13 +285,13 @@ public class UserInterface {
             }
         }
     }
-    /**
-   * Method to be called for removing clients. Removes clients only if client
-   * has no current show playing or upcoming shows.
-   * Prompts the user for the appropriate values and
-   * uses the appropriate Theater method for removing clients.
-   *  
-   */
+	/**
+	 * Method to be called for removing clients. Removes clients only if client
+	 * has no current show playing or upcoming shows.
+	 * Prompts the user for the appropriate values and
+	 * uses the appropriate Theater method for removing clients.
+	 *  
+	 */
     public void removeClient() {
         int result;
         do {
@@ -412,7 +436,7 @@ public class UserInterface {
     public void getShows() {
       Iterator result;
         result = theater.getShowList();
-        if (result.hasNext()) {
+        if (!result.hasNext()) {
         	// hasNext returns false if there are no contents in the list
             System.out.println("Show List is empty.");
         } else {
@@ -456,33 +480,6 @@ public class UserInterface {
         cnfe.printStackTrace();
       }
     }
-    /*
-     * Supplementary function to test validation of date (MM/DD/YY) entered in by user
-     * If month or date is out of range, returns false. Else, returns true
-     * Code based on: https://www.mkyong.com/java/how-to-check-if-date-is-valid-in-java/
-     */
-	public boolean isThisDateValid(String dateToValidate){
-
-		if(dateToValidate == null){
-			return false;
-		}
-
-		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-		sdf.setLenient(false);
-
-		try {
-
-			//if not valid, it will throw ParseException
-			Date date = sdf.parse(dateToValidate);
-			System.out.println(date);
-
-		} catch (ParseException e) {
-
-			e.printStackTrace();
-			return false;
-		}
-		return true;
-	}
    /**
     * Checks if the given card already exists in the database
     * @return true if the card already exists, else false.
@@ -503,18 +500,6 @@ public class UserInterface {
     		}
         }
         return false; // no customers found with the given card number
-    }
-    
-    /**
-     * Supplementary function to validate clerk's entered ID. Primarily
-     * used in addShows to ensure only enterring shows for existing clients
-     * @return True, if clientID entered is of existing client in list, else false
-     */
-    private boolean isValidClient(String clientID) {
-    	if(isValidClient(clientID))
-    		return true;
-    	else 
-    		return false;
     }
     
     /**

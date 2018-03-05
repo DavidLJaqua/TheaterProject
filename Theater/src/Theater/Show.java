@@ -138,15 +138,15 @@ public class Show implements Serializable{
 	
 	/**
 	 * Gets a custom toString value of a java Calendar date
-     	 * Since month is 0 based, 1 is added to month for display purposes
-     	 * 
+	 * Since month is 0 based, 1 is added to month for display purposes
+	 * 
 	 * @param date Java Calendar date to convert
 	 * @return String representation of the date
 	 */
 	public static String dateToString(Calendar date) {
-		return "[year=" + date.get(Calendar.YEAR) 
+		return "Calendar [year=" + date.get(Calendar.YEAR) 
 				+ " month=" + (date.get(Calendar.MONTH) + 1) 
 				+ " day=" + date.get(Calendar.DAY_OF_MONTH) + "]";
 	}
-
+	
 }
